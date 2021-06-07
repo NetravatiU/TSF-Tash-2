@@ -1,0 +1,35 @@
+#Loading required libraries
+library(stats)
+library(dplyr)
+library(ggplot2)
+library(ggfortify)
+
+#importing data
+Task2 <- read.csv("C://Users/netra/Desktop/Tasks/Task 2 .csv")
+View(Task2)
+
+#Unsupervised learning so converting Iris data into unlabeled data
+#slecting columns ignoring last column i.e; species
+
+data = select(Task2,c(1,2,3,4,5))     #creating an object
+
+#wss plot function to choose optimum number of clusters
+wssplot <- function(data, nc=15, seed=1234){
+  wss <- (nrow(data)-1)*sum(apply(data,2,var))
+  for (i in 2:nc){
+    set.seed(seed)
+    wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+  plot(1:nc, wss, type="b", xlab="Number of Clusters",
+       ylab="Within groups sum of squares")
+}
+
+wssplot(data)    #we can see kink at 2, so optimum clusters=2
+
+# K- means cluster analysis
+KM= kmeans(data,2)
+
+#evaluating cluster analysis #cluster plot
+autoplot(KM,data,frame=TRUE, main = "K means with 2 clusters")
+
+#clusters centers
+KM$centers
